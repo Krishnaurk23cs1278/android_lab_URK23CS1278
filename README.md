@@ -1,8 +1,10 @@
-# Ex. No. 1: Develop Android Project using Basic Views & UI Layouts
+# Ex. No. 2: Implement Activity Interaction using Intents and Animation
 **Register No:** URK23CS1278
 
 ## Aim
-To develop an Android application using Kotlin that demonstrates the creation and arrangement of basic Views and UI Layouts for designing an interactive user interface using Jetpack Compose.
+To develop a Food Ordering Android application using Kotlin and Jetpack Compose that demonstrates Activity interaction using Explicit Intents, data passing between Activities, and UI animations.
 
 ## Files Included
-- `MainActivity.kt`: Contains the `StudentProfile` composable layout with form inputs and dynamic result submission.
+- `MainActivity.kt`: Displays the food menu and launches `OrderActivity` via Intent.
+- `OrderActivity.kt`: Receives Intent data and displays an animated order confirmation screen.
+- `AndroidManifest.xml`: Declares both activities.

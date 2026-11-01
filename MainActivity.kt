@@ -1,5 +1,6 @@
-package com.example.studentprofile
+package com.example.foodorderingapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +19,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    StudentProfile()
+                    FoodMenuScreen(
+                        onOrderClick = { foodName, foodPrice ->
+                            val intent = Intent(this, OrderActivity::class.java)
+                            intent.putExtra("food_name", foodName)
+                            intent.putExtra("food_price", foodPrice)
+                            startActivity(intent)
+                        }
+                    )
                 }
             }
         }
@@ -26,11 +34,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun StudentProfile() {
-    var name by remember { mutableStateOf("") }
-    var registerNumber by remember { mutableStateOf("") }
-    var department by remember { mutableStateOf("") }
-    var result by remember { mutableStateOf("") }
+fun FoodMenuScreen(onOrderClick: (String, String) -> Unit) {
+    var selectedFood by remember { mutableStateOf("") }
+    var selectedPrice by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -39,64 +45,43 @@ fun StudentProfile() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Student Profile",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Text("FOOD ORDERING APP", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Text("Select Your Food", fontSize = 20.sp)
+        Spacer(Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+        FoodItem("Burger", "₹120", selectedFood == "Burger") {
+            selectedFood = "Burger"; selectedPrice = "₹120"
+        }
+        FoodItem("Pizza", "₹180", selectedFood == "Pizza") {
+            selectedFood = "Pizza"; selectedPrice = "₹180"
+        }
+        FoodItem("Sandwich", "₹100", selectedFood == "Sandwich") {
+            selectedFood = "Sandwich"; selectedPrice = "₹100"
+        }
+        FoodItem("Pasta", "₹150", selectedFood == "Pasta") {
+            selectedFood = "Pasta"; selectedPrice = "₹150"
+        }
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            placeholder = { Text("Enter your name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = registerNumber,
-            onValueChange = { registerNumber = it },
-            label = { Text("Register Number") },
-            placeholder = { Text("Enter register number") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = department,
-            onValueChange = { department = it },
-            label = { Text("Department") },
-            placeholder = { Text("Enter department") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                result = "Student Details\n\n" +
-                        "Name: $name\n" +
-                        "Register Number: $registerNumber\n" +
-                        "Department: $department"
-            },
+            onClick = { onOrderClick(selectedFood, selectedPrice) },
+            enabled = selectedFood.isNotEmpty(),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("SUBMIT")
+            Text("ORDER NOW")
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (result.isNotEmpty()) {
-            Text(
-                text = result,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
+@Composable
+fun FoodItem(foodName: String, price: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = selected, onClick = onClick)
+        Text("$foodName - $price", fontSize = 18.sp)
     }
 }
